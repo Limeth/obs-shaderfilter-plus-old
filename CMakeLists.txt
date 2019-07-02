@@ -15,8 +15,9 @@ else()
 endif()
 
 find_path(OBS_LIB_DIR
-    NAMES obs.dll obs.lib
+    NAMES libobs.so obs.dll obs.lib
     HINTS	
+		${OBSSourcePath}/../build/libobs/
 		${OBSSourcePath}/../build/${_lib_suffix}-Debug/libobs/
 		${OBSSourcePath}/../build/x86-Debug/libobs/		
 		${OBSSourcePath}/../build/${_lib_suffix}-Release/libobs/		
@@ -40,10 +41,19 @@ add_library (${PROJECT_NAME} SHARED
 # libobs
 include_directories(${OBSSourcePath})
 add_library (libobs SHARED IMPORTED)
-set_property (TARGET libobs PROPERTY IMPORTED_LOCATION ${OBS_LIB_DIR}/obs.dll)
-set_property (TARGET libobs PROPERTY IMPORTED_IMPLIB ${OBS_LIB_DIR}/obs.lib)
+if (WIN32)
+    set_property (TARGET libobs PROPERTY IMPORTED_LOCATION ${OBS_LIB_DIR}/obs.dll)
+    set_property (TARGET libobs PROPERTY IMPORTED_IMPLIB ${OBS_LIB_DIR}/obs.lib)
+else()
+    set_property (TARGET libobs PROPERTY IMPORTED_LOCATION ${OBS_LIB_DIR}/libobs.so)
+endif()
 target_link_libraries (${PROJECT_NAME} libobs)
 
-install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION obs-plugins/${_lib_suffix}bit)
-install(FILES ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME}.pdb DESTINATION obs-plugins/${_lib_suffix}bit CONFIGURATIONS Debug)
-install(DIRECTORY data/ DESTINATION data/obs-plugins/${PROJECT_NAME}/)
+if (WIN32)
+    install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${PROJECT_NAME}/bin/${_lib_suffix}bit)
+else()
+    install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PROJECT_NAME}/bin/${_lib_suffix}bit)
+endif()
+
+install(FILES ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME}.pdb DESTINATION ${PROJECT_NAME}/bin/${_lib_suffix}bit CONFIGURATIONS Debug)
+install(DIRECTORY data/ DESTINATION ${PROJECT_NAME}/data/)
