@@ -3,5 +3,4 @@
     1. `mkdir build; cd build`
     2. `env OBSSourcePath='/home/limeth/workspace/c/obs-studio/libobs' cmake ..; and make -j24`
 3. Install by copying built plugin files to OBS plugin directory:
-    * Either by running `sudo make install`;
-    * or by running `sudo cp libobs-shaderfilter.so /usr/lib/obs-plugins/`
+    * `sudo make install`

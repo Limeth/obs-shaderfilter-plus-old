@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8.12)
-project (obs-shaderfilter)
+project (obs-shaderfilter-plus)
 
 if (OBSSourcePath OR DEFINED ENV{OBSSourcePath})
     # Set already
@@ -33,4 +33,7 @@ add_library (libobs SHARED IMPORTED)
 set_property (TARGET libobs PROPERTY IMPORTED_LOCATION ${OBS_LIB_DIR}/libobs.so)
 target_link_libraries (${PROJECT_NAME} libobs)
 
+# Install the resources in `data`
+install(DIRECTORY data/ DESTINATION /usr/share/obs/obs-plugins/${PROJECT_NAME})
+# Install the shared object binary itself
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION /usr/lib/obs-plugins/)
